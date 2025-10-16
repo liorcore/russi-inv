@@ -1,10 +1,56 @@
-// Apps Script - פשוט ועובד
+// Apps Script - פשוט ועובד עם אבטחה
 const SHEET_ID = '1p6YLE8UNypH8cQ2ONCQwIz1aSqy4Xs0E0BPscqIdtUA';
 const SHEET_NAME = 'גיליון1';
+const MAX_REQUESTS_PER_SESSION = 50; // מקסימום 50 בקשות לכל sessionId
+const MAX_REQUESTS_PER_MINUTE = 100; // מקסימום 100 בקשות בדקה (כולל)
+
+// Cache לספירת בקשות (נמחק כל 6 דקות אוטומטית)
+const cache = CacheService.getScriptCache();
+
+// בדיקת Rate Limiting
+function checkRateLimit(sessionId) {
+  // בדיקה לפי sessionId
+  const sessionKey = 'rate_session_' + sessionId;
+  const sessionCount = cache.get(sessionKey) || '0';
+  const newSessionCount = parseInt(sessionCount) + 1;
+  
+  if (newSessionCount > MAX_REQUESTS_PER_SESSION) {
+    throw new Error('Too many requests from this session. Please wait.');
+  }
+  
+  cache.put(sessionKey, String(newSessionCount), 360); // 6 דקות
+  
+  // בדיקה כללית לכל הבקשות
+  const globalKey = 'rate_global_' + Math.floor(Date.now() / 60000);
+  const globalCount = cache.get(globalKey) || '0';
+  const newGlobalCount = parseInt(globalCount) + 1;
+  
+  if (newGlobalCount > MAX_REQUESTS_PER_MINUTE) {
+    throw new Error('Server is busy. Please try again later.');
+  }
+  
+  cache.put(globalKey, String(newGlobalCount), 60); // דקה אחת
+  
+  return true;
+}
 
 function doGet(e) {
   var action = (e.parameter.action || '').toLowerCase();
   var callback = e.parameter.callback;
+  var apiKey = e.parameter.apiKey || '';
+  
+  // וידוא API Key (אופציונלי - אפשר להסיר לפשטות)
+  // if (!validateApiKey(apiKey)) {
+  //   var errorPayload = JSON.stringify({ error: 'Unauthorized' });
+  //   if (callback) {
+  //     return ContentService
+  //       .createTextOutput(callback + '(' + errorPayload + ')')
+  //       .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  //   }
+  //   return ContentService
+  //     .createTextOutput(errorPayload)
+  //     .setMimeType(ContentService.MimeType.JSON);
+  // }
 
   if (action === 'getrsvps') {
     var rsvps = getRsvps();
@@ -27,6 +73,9 @@ function doGet(e) {
       var status = e.parameter.status || '';
       var reason = e.parameter.reason || '';
       var sessionId = e.parameter.sessionId || '';
+      
+      // בדיקת Rate Limiting
+      checkRateLimit(sessionId);
       
       saveRsvp(sessionId, name, status, reason);
       
