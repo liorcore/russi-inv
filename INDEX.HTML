@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ברכת החמישי - קלף תנכ"י עתיק</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* הגדרות כלליות */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #e0d8c0; /* רקע כללי בהיר יותר */
+        }
+
+        .scroll {
+            /* מראה קלף פרגמנט או פפירוס דהוי */
+            background-color: #fcefd9; /* צבע שמנת/ספיה בהיר */
+            border: 4px solid #a0522d; /* גבול חום עמוק */
+            /* צל פנימי עדין המדמה בלאי */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), inset 0 0 30px rgba(230, 200, 150, 0.5); 
+            padding: 50px 70px; 
+            max-width: 650px;
+            width: 90%;
+            text-align: center; /* יישור הטקסט למרכז כבקשתך */
+            font-family: 'Times New Roman', 'Noto Serif Hebrew', serif; /* גופן סריף עתיק */
+            color: #331a00; /* צבע דיו חום כהה מאוד */
+            line-height: 1.8; /* רווח גדול יותר בין השורות */
+            direction: rtl;
+        }
+
+        .title {
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #6a0000; /* דיו אדום עמוק לכותרת */
+            border-bottom: 2px solid #6a0000;
+            display: block;
+            padding-bottom: 8px;
+            text-align: center; 
+        }
+
+        .verse {
+            font-size: 1.4em; 
+            margin-bottom: 15px;
+            text-indent: 0; 
+            padding-right: 0; 
+        }
+
+        .emphasis {
+            font-weight: 700;
+            color: #6a0000; /* דיו אדום עמוק להדגשת מילים עיקריות */
+        }
+        
+        /* סגנון מיוחד לפסוק המודגש - כמו חריטה או כתב סופרים */
+        .highlighted-verse {
+            font-size: 1.8em; 
+            font-weight: 700;
+            margin: 40px 0;
+            padding: 15px;
+            background-color: rgba(160, 82, 45, 0.1); /* רקע שקוף ועדין */
+            border-top: 3px double #a0522d; /* מסגרת דקורטיבית חום עמוק */
+            border-bottom: 3px double #a0522d;
+            border-radius: 0;
+            line-height: 1.5;
+            color: #4f2c00; /* דיו כהה מאוד */
+            text-align: center;
+            text-indent: 0;
+        }
+        /* הדגשה בתוך הפסוק עצמו */
+        .highlighted-verse .emphasis {
+             font-size: 1.2em; 
+             color: #6a0000; /* הדגשה בתוך הקטע באדום */
+             font-style: italic;
+        }
+        
+        /* סגנון שורת הסיום - יותר מסורתי */
+        .deluxe {
+            font-size: 1.5em;
+            font-style: normal;
+            font-weight: 700;
+            color: #6a0000; /* אדום עתיק */
+            margin-top: 40px;
+            border-top: 1px solid #a0522d;
+            padding-top: 15px;
+            text-align: center;
+        }
+        
+        /* --- סגנון כפתורים תנ"כי --- */
+        .tannach-btn {
+            font-family: 'Times New Roman', serif;
+            font-weight: 700;
+            padding: 12px 24px;
+            font-size: 1.25rem; /* text-xl */
+            border-radius: 4px;
+            transition: all 0.2s;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* כפתור מגיע - זהב/קלף רגוע */
+        .tannach-btn-gold {
+            background-color: #e8d8b8; /* צבע זהב עתיק / קלף כהה */
+            color: #331a00; /* דיו חום כהה */
+            border: 2px solid #a0522d; /* גבול חום עמוק */
+        }
+        .tannach-btn-gold:hover {
+            background-color: #d1c3a6; /* מעט כהה יותר בהיבר */
+            transform: translateY(-1px);
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* כפתור לא מגיע - אפרורי/עצוב */
+        .tannach-btn-ash {
+            background-color: #884a4a; /* אדום-אפרורי */
+            color: #fcefd9; /* צבע קלף בהיר (דיו לבן) */
+            border: 2px solid #6a0000; /* גבול דיו אדום עמוק */
+        }
+        .tannach-btn-ash:hover {
+            background-color: #753a3a; /* כהה יותר בהיבר */
+            transform: translateY(-1px);
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* סגנון לדיאלוג (מודאל) */
+        .modal {
+            display: none; /* מוסתר כברירת מחדל */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto; /* סנטור אוטומטי */
+            padding: 25px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 480px; /* גודל פרופורציונלי יותר */
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: right;
+            direction: rtl;
+        }
+
+        /* --- פידבק קונפטי (FULL SCREEN) --- */
+        /* Keyframes המדמה פיצוץ (blast) למעלה ופיזור איטי (fall) לכל המסך */
+        @keyframes confetti-fall {
+            0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+            10% { opacity: 1; transform: translate(var(--start-x), var(--blast-y)) rotate(var(--rot-start)); }
+            100% { opacity: 0; transform: translate(var(--end-x), var(--fall-y)) rotate(var(--rot-end)); }
+        }
+        
+        .confetti-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            /* שימוש במשתני CSS דינמיים */
+            animation-name: confetti-fall;
+            animation-timing-function: cubic-bezier(0.1, 1, 0.4, 1);
+            animation-fill-mode: forwards;
+            pointer-events: none;
+            border-radius: 2px;
+        }
+        
+        /* --- פידבק עצוב (SHAKE) --- */
+        @keyframes shake {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            10% { transform: translate(-51%, -52%) rotate(-1deg); }
+            20% { transform: translate(-53%, -50%) rotate(1deg); }
+            30% { transform: translate(-47%, -48%) rotate(0deg); }
+            40% { transform: translate(-49%, -51%) rotate(1deg); }
+            50% { transform: translate(-51%, -48%) rotate(-1deg); }
+            60% { transform: translate(-53%, -49%) rotate(0deg); }
+            70% { transform: translate(-47%, -49%) rotate(-1deg); }
+            80% { transform: translate(-51%, -51%) rotate(1deg); }
+            90% { transform: translate(-49%, -48%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+        .local-sad-face {
+            position: absolute;
+            top: 50%; 
+            left: 50%;
+            /* ה-shake כבר דואג ל-translate, אבל צריך בסיס */
+            transform: translate(-50%, -50%); 
+            font-size: 5em;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            animation: fade-in-out 1.5s forwards, shake 0.1s infinite 0.5s; 
+        }
+        @keyframes fade-in-out {
+            0% { opacity: 0; }
+            30% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* התאמה למסכים קטנים יותר */
+        @media (max-width: 640px) {
+            .scroll {
+                padding: 20px 30px;
+            }
+            .modal-content {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="scroll">
+    <div class="title">בִּרְכַּת הַחֲמִישִׁי</div>
+
+    <!-- גוף הברכה - הוחזר לניסוח המקורי -->
+    <div class="verse">
+        <span class="emphasis">יוֹם חֲמִישִׁי</span> מֵאִיר פָּנִים,
+        <br> כִּי עָמַלְנוּ כָּל הַיָּמִים.
+    </div>
+    
+    <div class="verse">
+        <span class="emphasis">וַיִּכְלוּ הַשָּׁמַיִם וְהָאָרֶץ וּצְבָאָם,</span>
+        <br> וּמְנוּחַת הַקֹּדֶשׁ עַל כֻּלָּם.
+    </div>
+
+    <div class="verse">
+        <span class="emphasis">וַיִּגָּמֵר הַשָּׁבוּעַ</span> בְּבִרְכַּת שָׁלוֹם,
+        <br> לְרֶגַע שֶׁל שֶׁקֶט, לְנֶפֶשׁ שֶׁל חֲלוֹם.
+    </div>
+
+    <div class="verse">
+        <span class="emphasis">וְיִתְעַיְּפוּ הַחֲבֵרִים</span> מֵהַדְּרָכִים,
+        <br> וְיָנוּחוּ מֵהַמְּרוּצוֹת וּמֵהַשְּׂחָקִים.
+    </div>
+    
+    <!-- הפסוק המודגש והמוגדל -->
+    <div class="highlighted-verse">
+        <span class="emphasis">וּבַחֲמִישִׁי יֵשְׁבוּ אֵצֶל הָרוּסִי,</span>
+        <br> לְכֹס וּלְשׂוֹחֵחַ, וְהִדְלִיק טִיל קַטְלָנִי.
+    </div>
+
+    <div class="verse">
+        <span class="emphasis">וְיִתְכַּנֵּס הַפַּרְלָמֶנְט</span> לְשֻׁלְחַן הַחֲמִישִׁי,
+        <br> הַדְלָקַת הַנֵּרוֹת תָּבוֹא לָנוּ לִבְרָכָה,
+    </div>
+
+    <div class="deluxe">
+        <span class="emphasis">תְּהִי יְשִׁיבַת הַדָּה לוּקְס,</span> מְלֵאָה שִׂמְחָה וְנַחַת.
+    </div>
+
+    <!-- ----- סוף הברכה, תחילת מערכת אישורי ההגעה ----- -->
+
+    <div id="rsvp-section" class="mt-12 pt-8 border-t-2 border-dashed border-[#a0522d] w-full relative">
+        <h2 class="text-2xl font-bold mb-4 text-[#6a0000]">אִשּׁוּרֵי הַגָּעָה</h2>
+
+        <!-- מיכל לפידבק מקומי. ישמש רק לפרצוף העצוב, הקונפטי יהיה על כל המסך -->
+        <div id="local-feedback-container" class="absolute inset-x-0 bottom-4 h-24 pointer-events-none z-10"></div>
+        
+        <div class="flex justify-center gap-4 relative z-20">
+            <!-- כפתור מגיע - סגנון תנ"כי ורגוע -->
+            <button id="btn-attending" class="tannach-btn tannach-btn-gold">
+                <span class="text-xl">מַגִּיעַ</span>
+            </button>
+            <!-- כפתור לא מגיע - סגנון אפרורי -->
+            <button id="btn-not-attending" class="tannach-btn tannach-btn-ash">
+                <span class="text-xl">לֹא מַגִּיעַ</span>
+            </button>
+        </div>
+
+        <!-- טבלת רשימות -->
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-right text-base" dir="rtl">
+            <div class="bg-green-50 p-4 rounded-lg shadow-inner border border-green-200">
+                <h3 class="text-lg font-bold text-green-700 border-b pb-2 mb-3">רְשִׁימַת הַמַּגִּיעִים (<span id="attending-count">0</span>)</h3>
+                <ul id="attending-list" class="list-none space-y-1 text-[#331a00] pr-0">
+                    <!-- הרשימה תטען כאן -->
+                </ul>
+            </div>
+
+            <div class="bg-red-50 p-4 rounded-lg shadow-inner border border-red-200">
+                <h3 class="text-lg font-bold text-red-700 border-b pb-2 mb-3">רְשִׁימַת הַנֶּעְדָּרִים (<span id="not-attending-count">0</span>)</h3>
+                <ul id="not-attending-list" class="list-none space-y-1 text-[#331a00] pr-0">
+                    <!-- הרשימה תטען כאן -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- דיאלוג - מגיע -->
+<div id="modal-attending" class="modal">
+    <div class="modal-content">
+        <div id="attending-form-content">
+            <div class="modal-header">אִשּׁוּר הַגָּעָה</div>
+            <form id="form-attending">
+                <label for="attending-name" class="block mb-2 font-semibold">שִׁמְךָ בְּיִשְׂרָאֵל (אוֹ כִּינּוּי):</label>
+                <input type="text" id="attending-name" name="name" required class="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-right">
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('modal-attending')" class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500">בִּטּוּל</button>
+                    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">שְׁלַח</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- דיאלוג - לא מגיע -->
+<div id="modal-not-attending" class="modal">
+    <div class="modal-content">
+        <div id="not-attending-form-content">
+            <div class="modal-header">הוֹדָעָה עַל הֶעְדֵּרוּת</div>
+            <form id="form-not-attending">
+                <label for="not-attending-name" class="block mb-2 font-semibold">שִׁמְךָ בְּיִשְׂרָאֵל (אוֹ כִּינּוּי):</label>
+                <input type="text" id="not-attending-name" name="name" required class="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-red-500 text-right">
+                
+                <label for="absence-reason" class="block mb-2 font-semibold">סִבַּת הַהֶעְדֵּרוּת:</label>
+                <textarea id="absence-reason" name="reason" required class="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-red-500 text-right h-24"></textarea>
+                
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('modal-not-attending')" class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500">בִּטּוּל</button>
+                    <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">שְׁלַח</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- קונפיגורציית Apps Script (חובה לעדכן) ---
+    // הכתובת עודכנה ל-URL של פריסת ה-Web App שלך:
+    const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw_Pl6uINIGlwlZnF1tbzFsLb_VYrE5cpMXkWX7sDtMbq79qxw7FkdnGfcV5qqFA6WUiQ/exec'; 
+
+    let sessionId = null;
+
+    // רכיבי DOM
+    const btnAttending = document.getElementById('btn-attending');
+    const btnNotAttending = document.getElementById('btn-not-attending');
+    const attendingFormContent = document.getElementById('attending-form-content');
+    const notAttendingFormContent = document.getElementById('not-attending-form-content');
+    const attendingList = document.getElementById('attending-list');
+    const notAttendingList = document.getElementById('not-attending-list');
+    const attendingCount = document.getElementById('attending-count');
+    const notAttendingCount = document.getElementById('not-attending-count');
+    
+    /**
+     * פונקציה ליצירה או שליפה של מזהה ייחודי מקומי ל-Local Storage
+     * זה משמש להבטחת הרשמה אחת לכל דפדפן/משתמש.
+     */
+    function getOrCreateSessionId() {
+        let id = localStorage.getItem('rsvpSessionId');
+        if (!id) {
+            // יצירת מזהה ייחודי חזק
+            id = crypto.randomUUID(); 
+            localStorage.setItem('rsvpSessionId', id);
+        }
+        sessionId = id;
+    }
+
+
+    // פונקציות להצגה והסתרת מודאלים
+    function openModal(id) {
+        document.getElementById(id).style.display = 'flex';
+        if (id === 'modal-attending') restoreFormContent(id);
+        if (id === 'modal-not-attending') restoreFormContent(id);
+    }
+
+    window.closeModal = function(id) {
+        document.getElementById(id).style.display = 'none';
+        restoreFormContent(id);
+    }
+
+    // שחזור תוכן הטופס המקורי (נדרש לאחר הצגת הודעת "תודה")
+    function restoreFormContent(modalId) {
+        // המבנה הזה נשמר כדי להבטיח שהטופס תמיד ניתן לשליחה מחדש
+        const isAttending = modalId === 'modal-attending';
+        const formContainer = isAttending ? attendingFormContent : notAttendingFormContent;
+        const formId = isAttending ? 'form-attending' : 'form-not-attending';
+        const submitHandler = isAttending ? handleAttendingSubmit : handleNotAttendingSubmit;
+
+        formContainer.innerHTML = isAttending 
+            ? `
+                <div class="modal-header">אִשּׁוּר הַגָּעָה</div>
+                <form id="${formId}">
+                    <label for="attending-name" class="block mb-2 font-semibold">שִׁמְךָ בְּיִשְׂרָאֵל (אוֹ כִּינּוּי):</label>
+                    <input type="text" id="attending-name" name="name" required class="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-right">
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="closeModal('modal-attending')" class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500">בִּטּוּל</button>
+                        <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">שְׁלַח</button>
+                    </div>
+                </form>
+            `
+            : `
+                <div class="modal-header">הוֹדָעָה עַל הֶעְדֵּרוּת</div>
+                <form id="${formId}">
+                    <label for="not-attending-name" class="block mb-2 font-semibold">שִׁמְךָ בְּיִשְׂרָאֵל (אוֹ כִּינּוּי):</label>
+                    <input type="text" id="not-attending-name" name="name" required class="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-red-500 text-right">
+                    
+                    <label for="absence-reason" class="block mb-2 font-semibold">סִבַּת הַהֶעְדֵּרוּת:</label>
+                    <textarea id="absence-reason" name="reason" required class="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-red-500 text-right h-24"></textarea>
+                    
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="closeModal('modal-not-attending')" class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500">בִּטּוּל</button>
+                        <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">שְׁלַח</button>
+                    </div>
+                </form>
+            `;
+        document.getElementById(formId).addEventListener('submit', submitHandler);
+    }
+    
+    // פונקציות פידבק ויזואלי (קונפטי/פרצוף עצוב) נשארות כפי שהן
+    function showConfetti() { 
+        const colors = ['#FFD700', '#A0522D', '#FFFFFF', '#6A0000']; 
+        const confettiContainer = document.createElement('div');
+        confettiContainer.style.position = 'fixed';
+        confettiContainer.style.top = '0';
+        confettiContainer.style.left = '0';
+        confettiContainer.style.width = '100vw';
+        confettiContainer.style.height = '100vh';
+        confettiContainer.style.pointerEvents = 'none';
+        confettiContainer.style.zIndex = '9999'; 
+        document.body.appendChild(confettiContainer);
+        const numParticles = 150; 
+        for (let i = 0; i < numParticles; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti-particle'; 
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            const centerX = window.innerWidth / 2;
+            const startY = window.innerHeight / 2;
+            confetti.style.left = `${centerX}px`;
+            confetti.style.top = `${startY}px`;
+            const angle = Math.random() * 360; 
+            const velocity = Math.random() * 80 + 100; 
+            const distance = Math.random() * 300 + 150; 
+            const blastX = Math.cos(angle * Math.PI / 180) * velocity;
+            const fallX = Math.cos(angle * Math.PI / 180) * distance;
+            confetti.style.setProperty('--start-x', `${blastX}px`);
+            confetti.style.setProperty('--blast-y', `${-Math.abs(blastX) - 100}px`); 
+            confetti.style.setProperty('--end-x', `${fallX}px`);
+            confetti.style.setProperty('--fall-y', `${window.innerHeight - startY + 50}px`); 
+            confetti.style.setProperty('--rot-start', `${Math.random() * 360}deg`);
+            confetti.style.setProperty('--rot-end', `${Math.random() * 1080 + 720}deg`);
+            confetti.style.animationDuration = `${1.5 + Math.random() * 1.5}s`;
+            confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+            confettiContainer.appendChild(confetti);
+        }
+        setTimeout(() => confettiContainer.remove(), 4000); 
+    }
+
+    function showSadFace() {
+        const sadFaceContainer = document.createElement('div');
+        sadFaceContainer.style.position = 'fixed';
+        sadFaceContainer.style.top = '0';
+        sadFaceContainer.style.left = '0';
+        sadFaceContainer.style.width = '100vw';
+        sadFaceContainer.style.height = '100vh';
+        sadFaceContainer.style.pointerEvents = 'none';
+        sadFaceContainer.style.zIndex = '9999'; 
+        document.body.appendChild(sadFaceContainer);
+        const sadFace = document.createElement('div');
+        sadFace.className = 'local-sad-face';
+        sadFace.textContent = '😢';
+        sadFace.style.position = 'absolute';
+        sadFace.style.top = '50%'; 
+        sadFace.style.left = '50%';
+        sadFace.style.transform = 'translate(-50%, -50%)';
+        sadFaceContainer.appendChild(sadFace);
+        setTimeout(() => sadFaceContainer.remove(), 2000); 
+    }
+
+    /**
+     * פונקציה לשליחת נתונים ל-Google Apps Script (GET) עם מנגנון ניסיונות חוזרים.
+     */
+    async function submitRsvp(name, status, reason = '', formContentEl) { 
+        if (!sessionId) {
+            console.error("Session ID is missing.");
+            return;
+        }
+
+        // UI Feedback: Show loading state
+        formContentEl.innerHTML = `<div class="text-center p-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p class="text-xl text-gray-700">שולח אישור...</p>
+        </div>`;
+
+        const params = new URLSearchParams({
+            action: 'submit',
+            sessionId: sessionId,
+            name: name,
+            status: status,
+            reason: reason
+        });
+
+        let success = false;
+        let maxRetries = 3;
+        
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                // קריאת GET מפושטת – לא קוראים את הגוף כדי לא להיתקע על CORS
+                const response = await fetch(`${API_ENDPOINT}?${params.toString()}`, { 
+                    method: 'GET', 
+                    cache: 'no-store' 
+                });
+                
+                if (response.ok) {
+                    success = true;
+                    break; // הצלחה
+                }
+            } catch (error) {
+                console.log(`Attempt ${attempt} failed:`, error);
+            }
+
+            // השהייה (Backoff)
+            if (attempt < maxRetries) {
+                const delay = Math.pow(2, attempt) * 1000 + (Math.random() * 1000); 
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+
+        // עדכון UI לאחר שליחה (או כשל)
+        if (success) {
+            if (status === 'attending') {
+                formContentEl.innerHTML = `<div class="text-center p-8">
+                    <h3 class="text-3xl font-bold text-[#6a0000] mb-4">אַחְלָה ${name}!</h3>
+                    <p class="text-xl text-gray-700">הרשמתך נשמרה בהצלחה.</p>
+                </div>`;
+            } else {
+                formContentEl.innerHTML = `<div class="text-center p-8">
+                    <h3 class="text-3xl font-bold text-red-600 mb-4">חבל מאוד ${name},</h3>
+                    <p class="text-xl text-gray-700">נרשם לך חיסור</p>
+                </div>`;
+            }
+        } else {
+            formContentEl.innerHTML = `<div class="text-center p-8">
+                <h3 class="text-3xl font-bold text-red-600 mb-4">שגיאה!</h3>
+                <p class="text-xl text-gray-700">שמירת ההרשמה נכשלה. נסה שוב מאוחר יותר.</p>
+            </div>`;
+        }
+
+
+        // סגירת המודאל ופידבק ויזואלי
+        setTimeout(() => {
+            const modalId = formContentEl.closest('.modal').id;
+            closeModal(modalId);
+            
+            if (success) {
+                if (status === 'attending') {
+                    showConfetti(); 
+                } else {
+                    showSadFace();
+                }
+            }
+            // רענון הרשימה לאחר שליחה מוצלחת
+            if (success) fetchRsvpsFromSheet();
+
+        }, 1200);
+    }
+
+    /**
+     * פונקציה לשליפת רשימת ה-RSVPs המעודכנת מה-Apps Script (JSONP).
+     */
+    function fetchRsvpsFromSheet() {
+        const callbackName = 'rsvpsCallback_' + Math.random().toString(36).slice(2);
+        
+        return new Promise((resolve, reject) => {
+            window[callbackName] = (data) => {
+                try {
+                    if (data && data.rsvps) {
+                        updateRsvpLists(data.rsvps);
+                    } else {
+                        console.error("Received unexpected data format from Apps Script:", data);
+                    }
+                    resolve();
+                } catch (error) {
+                    console.error("Error processing RSVP data:", error);
+                    attendingList.innerHTML = '<li class="text-red-500">שגיאה בטעינת הרשימות.</li>';
+                    notAttendingList.innerHTML = '';
+                    attendingCount.textContent = '0';
+                    notAttendingCount.textContent = '0';
+                    reject(error);
+                } finally {
+                    delete window[callbackName];
+                    if (script && script.parentNode) {
+                        script.parentNode.removeChild(script);
+                    }
+                }
+            };
+            
+            const script = document.createElement('script');
+            script.src = `${API_ENDPOINT}?action=getRsvps&callback=${callbackName}`;
+            script.onerror = () => { 
+                delete window[callbackName]; 
+                attendingList.innerHTML = '<li class="text-red-500">שגיאה בטעינת הרשימות.</li>';
+                notAttendingList.innerHTML = '';
+                attendingCount.textContent = '0';
+                notAttendingCount.textContent = '0';
+                reject(new Error('JSONP error')); 
+            };
+            document.body.appendChild(script);
+        }).catch(() => {
+            // שגיאה כבר מטופלת ב-onerror
+        });
+    }
+
+    /**
+     * עדכון ה-DOM עם רשימת ה-RSVPs שהתקבלה.
+     */
+    function updateRsvpLists(rsvps) {
+        let attending = [];
+        let notAttending = [];
+
+        rsvps.forEach((data) => {
+            if (data.status === 'attending') {
+                attending.push(data.name);
+            } else if (data.status === 'not_attending') {
+                notAttending.push({ name: data.name, reason: data.reason });
+            }
+        });
+
+        // עדכון רשימת המגיעים
+        attendingList.innerHTML = attending.length > 0
+            ? attending.map(name => `<li class="border-b border-green-100 last:border-b-0 py-1">${name}</li>`).join('')
+            : '<li class="text-gray-500">עוד לא אישרו הגעה...</li>';
+        attendingCount.textContent = attending.length;
+
+        // עדכון רשימת הנעדרים
+        notAttendingList.innerHTML = notAttending.length > 0
+            ? notAttending.map(item => 
+                `<li class="border-b border-red-100 last:border-b-0 py-1">
+                    <strong>${item.name}</strong> 
+                    <span class="text-sm text-red-600">(${item.reason || 'אין סיבה'})</span>
+                </li>`).join('')
+            : '<li class="text-gray-500">כולם מגיעים!</li>';
+        notAttendingCount.textContent = notAttending.length;
+    }
+
+    // פונקציות מטפלות בשליחת הטפסים
+    const handleAttendingSubmit = async (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('attending-name');
+        const name = nameInput.value.trim();
+        if (name) {
+            const formContainer = document.getElementById('attending-form-content');
+            await submitRsvp(name, 'attending', '', formContainer); 
+        }
+    };
+
+    const handleNotAttendingSubmit = async (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('not-attending-name');
+        const reasonInput = document.getElementById('absence-reason');
+        const name = nameInput.value.trim();
+        const reason = reasonInput.value.trim();
+
+        if (name && reason) {
+            const formContainer = document.getElementById('not-attending-form-content');
+            await submitRsvp(name, 'not_attending', reason, formContainer); 
+        }
+    };
+
+
+    // --- איתחול האפליקציה ---
+    function initApp() {
+        getOrCreateSessionId();
+        
+        // טוען את הרשימות בפעם הראשונה
+        fetchRsvpsFromSheet();
+        
+        // מפעיל רענון אוטומטי כל 5 שניות (Polling)
+        setInterval(fetchRsvpsFromSheet, 5000); 
+    }
+    
+    // --- האזנה לאירועים ---
+    btnAttending.addEventListener('click', () => {
+        openModal('modal-attending');
+        setTimeout(() => document.getElementById('attending-name')?.focus(), 100);
+    });
+
+    btnNotAttending.addEventListener('click', () => {
+        openModal('modal-not-attending');
+        setTimeout(() => document.getElementById('not-attending-name')?.focus(), 100);
+    });
+
+    // חיבור ה-listeners לטפסים
+    // יש לוודא שה-event listeners מחברים רק לאחר שחזור התוכן ב-restoreFormContent
+    // מכיוון שאנו קוראים ל-restoreFormContent בפתיחת המודאל, אנחנו צריכים לחבר אותם כאן רק עבור האתחול הראשון.
+    // מכיוון שזה קובץ יחיד, נשתמש ב-event listeners ישירים:
+    document.getElementById('form-attending').addEventListener('submit', handleAttendingSubmit);
+    document.getElementById('form-not-attending').addEventListener('submit', handleNotAttendingSubmit);
+
+    // הפעלת האתחול
+    initApp();
+
+</script>
+</body>
+</html>
