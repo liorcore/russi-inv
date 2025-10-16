@@ -10,6 +10,8 @@
 - ✅ רשימות מגיעים ונעדרים בזמן אמת
 - ✅ אנימציות קונפטי ופידבק ויזואלי
 - ✅ רענון אוטומטי של הרשימות
+- 🔒 **Rate Limiting** - הגנה מפני שימוש לרעה (50 בקשות/משתמש/6 דקות)
+- 🔒 **Vercel Proxy** - הסתרת Apps Script URL
 
 ## קבצים
 
@@ -56,10 +58,18 @@
 
 ## שימוש
 
-1. פתח את `INDEX.HTML` בדפדפן
-2. לחץ על "מגיע" או "לא מגיע"
-3. מלא את הפרטים בטופס
-4. שלח
+### אם עם Vercel (מומלץ - עם אבטחה):
+1. עקוב אחרי [VERCEL_SETUP.md](VERCEL_SETUP.md) להגדרת Environment Variables
+2. פתח את האתר שלך ב-Vercel
+3. לחץ על "מגיע" או "לא מגיע"
+4. מלא את הפרטים בטופס
+5. שלח
+
+### אם בלי Vercel (גישה ישירה):
+1. פתח את `index.html`
+2. שנה את `API_ENDPOINT` לגישה ישירה (הסר את ה-comment)
+3. פתח את `index.html` בדפדפן
+4. לחץ על "מגיע" או "לא מגיע"
 
 הנתונים ישמרו אוטומטית ב-Google Sheets והרשימות יתעדכנו בזמן אמת.
 
@@ -68,9 +78,10 @@
 - HTML5
 - JavaScript (Vanilla)
 - Tailwind CSS
-- Google Apps Script
+- Google Apps Script (עם Rate Limiting)
 - Google Sheets API
-- JSONP לעקיפת CORS
+- Vercel Serverless Functions (Proxy)
+- Environment Variables (אבטחה)
 
 ## רישיון
 
