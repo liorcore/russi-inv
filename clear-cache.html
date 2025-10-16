@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Clear Cache</title>
+    <script>
+        // כפה רענון
+        if (window.location.search.indexOf('nocache') === -1) {
+            window.location.href = window.location.href + '?nocache=' + Date.now();
+        }
+    </script>
+</head>
+<body>
+    <h1>Cache cleared! Go back to main page.</h1>
+    <a href="/">Back to Home</a>
+</body>
+</html>
+

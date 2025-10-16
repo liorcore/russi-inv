@@ -2,7 +2,9 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ברכת החמישי - קלף תנכ"י עתיק</title>
+    <meta name="description" content="מערכת אישורי הגעה ליום חמישי">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* הגדרות כלליות */
@@ -336,9 +338,10 @@
 </div>
 
 <script>
-    // --- קונפיגורציית Apps Script (חובה לעדכן) ---
-    // הכתובת עודכנה ל-URL של פריסת ה-Web App שלך:
-    const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw_Pl6uINIGlwlZnF1tbzFsLb_VYrE5cpMXkWX7sDtMbq79qxw7FkdnGfcV5qqFA6WUiQ/exec'; 
+    // --- קונפיגורציית API (מאובטח דרך Vercel) ---
+    // במקום לקרוא ישירות ל-Apps Script, קוראים דרך Vercel Serverless Function
+    const API_ENDPOINT = '/api/rsvp'; // Vercel Serverless Function (מומלץ - מסתיר את Apps Script URL)
+    // const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw_Pl6uINIGlwlZnF1tbzFsLb_VYrE5cpMXkWX7sDtMbq79qxw7FkdnGfcV5qqFA6WUiQ/exec'; // גישה ישירה (לא מומלץ) 
 
     let sessionId = null;
 
@@ -492,28 +495,25 @@
             <p class="text-xl text-gray-700">שולח אישור...</p>
         </div>`;
 
-        const params = new URLSearchParams({
-            action: 'submit',
-            sessionId: sessionId,
-            name: name,
-            status: status,
-            reason: reason
-        });
-
         let success = false;
         let maxRetries = 3;
         
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                // קריאת GET מפושטת – לא קוראים את הגוף כדי לא להיתקע על CORS
-                const response = await fetch(`${API_ENDPOINT}?${params.toString()}`, { 
-                    method: 'GET', 
+                const response = await fetch(`${API_ENDPOINT}?action=submit&sessionId=${sessionId}&name=${encodeURIComponent(name)}&status=${status}&reason=${encodeURIComponent(reason)}`, { 
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     cache: 'no-store' 
                 });
                 
                 if (response.ok) {
-                    success = true;
-                    break; // הצלחה
+                    const data = await response.json();
+                    if (data.ok) {
+                        success = true;
+                        break; // הצלחה
+                    }
                 }
             } catch (error) {
                 console.log(`Attempt ${attempt} failed:`, error);
@@ -566,49 +566,35 @@
     }
 
     /**
-     * פונקציה לשליפת רשימת ה-RSVPs המעודכנת מה-Apps Script (JSONP).
+     * פונקציה לשליפת רשימת ה-RSVPs המעודכנת מה-API.
      */
-    function fetchRsvpsFromSheet() {
-        const callbackName = 'rsvpsCallback_' + Math.random().toString(36).slice(2);
-        
-        return new Promise((resolve, reject) => {
-            window[callbackName] = (data) => {
-                try {
-                    if (data && data.rsvps) {
-                        updateRsvpLists(data.rsvps);
-                    } else {
-                        console.error("Received unexpected data format from Apps Script:", data);
-                    }
-                    resolve();
-                } catch (error) {
-                    console.error("Error processing RSVP data:", error);
-                    attendingList.innerHTML = '<li class="text-red-500">שגיאה בטעינת הרשימות.</li>';
-                    notAttendingList.innerHTML = '';
-                    attendingCount.textContent = '0';
-                    notAttendingCount.textContent = '0';
-                    reject(error);
-                } finally {
-                    delete window[callbackName];
-                    if (script && script.parentNode) {
-                        script.parentNode.removeChild(script);
-                    }
+    async function fetchRsvpsFromSheet() {
+        try {
+            const response = await fetch(`${API_ENDPOINT}?action=getRsvps`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-            };
+            });
             
-            const script = document.createElement('script');
-            script.src = `${API_ENDPOINT}?action=getRsvps&callback=${callbackName}`;
-            script.onerror = () => { 
-                delete window[callbackName]; 
-                attendingList.innerHTML = '<li class="text-red-500">שגיאה בטעינת הרשימות.</li>';
-                notAttendingList.innerHTML = '';
-                attendingCount.textContent = '0';
-                notAttendingCount.textContent = '0';
-                reject(new Error('JSONP error')); 
-            };
-            document.body.appendChild(script);
-        }).catch(() => {
-            // שגיאה כבר מטופלת ב-onerror
-        });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data && data.rsvps) {
+                updateRsvpLists(data.rsvps);
+            } else {
+                console.error("Received unexpected data format:", data);
+                attendingList.innerHTML = '<li class="text-gray-500">אין נתונים...</li>';
+                notAttendingList.innerHTML = '<li class="text-gray-500">אין נתונים...</li>';
+            }
+        } catch (error) {
+            console.error("Error fetching RSVP list:", error);
+            attendingList.innerHTML = '<li class="text-gray-500">טוען...</li>';
+            notAttendingList.innerHTML = '<li class="text-gray-500">טוען...</li>';
+        }
     }
 
     /**
